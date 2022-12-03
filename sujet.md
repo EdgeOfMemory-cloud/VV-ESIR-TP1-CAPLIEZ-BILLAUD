@@ -22,14 +22,18 @@ Différentes sources consultées:
 5. https://en.wikipedia.org/wiki/Programmable_logic_array 
 
 En 1994, la société Intel (fabricant de processeurs) a sur le marché des nouveaux CPUs de la génération dite *Pentium*. Le professeur de mathématiques Thomas R. Nicely, de l’université de Lynchburg aux États-Unis, averti publiquement qu’une erreur est contenue dans le nouveau matériel d’Intel la même année. 
-Un processeur de cette gamme utilisant une instruction nommée *FDIV*, permettant de retourner le résultat de la division entre deux opérandes flottantes, pouvait retourner un quotient erroné au niveau des arrondis pour certaines opérations..
+Un processeur de cette gamme utilisant une instruction nommée *FDIV*, permettant de retourner le résultat de la division entre deux opérandes flottantes, pouvait retourner un quotient erroné au niveau des arrondis pour certaines opérations.
+
 L’exemple de la page Wikipédia (et celui le plus répendu) est le suivant : 
     • théoriquement, 4 195 835 / 3 145 727 = 1,333**820449136241002**. 
     • en pratique un processeur défectueux retourne 1,333**739068902037589**
 Ceci provient d’un bogue que nous pouvons qualifier de « global », venant d’une interaction improbable entre le logiciel et le matériel.
+
 Plus précisément, Intel a choisi de changer l’algorithme procédant à la division, shift-and-substract, avec celui de Sweeney, Robertson et Tocher (SFT). Son implémentation a été réalisée à l’aide de tableaux logiques programmables (outil permettant de définir un circuit logique programmable), au nombre de 2048. 1066 d’entre-elles devaient contenir une valeur parmi [-2,+2]. Cependant, 5 cellules, lors de la compilation du tableau et par la suite lors du chargement des données vers le matériel ayant pour but de graver la puce, ont vu leur valeur devenir 0 au lieu de +2. L’algorithme SFT étant récursif, les divisions réalisées, utilisant ces cellules du processeur, voient leur résultat faussé et extrapolé. 
 Toutes personnes ayant donc un ordinateur avec un processeur de cette gamme défectueux peut voir n’importe quel de ses programmes, utilisant une division flottante, avoir un comportement anormal et imprévu. 
+
 Une fois l’affaire rendue publique, Intel reconnaît l’existence de ce bogue mais affirme qu’il n’affecterait en réalité que peu d’utilisateurs, choisissant ainsi de ne rembourser que les clients pouvant prouver l’existence de cette anomalie. Après beaucoup de bruits médiatiques en sa défaveur et une stratégie agressive du concurrent IBM, Intel rappelle, sans conditions pour les clients, tous les processeurs défectueux. L’opération a été estimée à 752 millions de dollar de nos jours, couplée avec une image de marque fragilisée. 
+
 Cette erreur était-elle détectable ? Un scénario naïf aurait été à l’époque de calculer toutes les opérations flottantes possibles du processeur, puis comparer son résultat pratique avec son homologue théorique. Cependant, le coût est tout de suite déraisonnable, au vu du nombre de cas tests à traiter. 
 Une solution plus simple pourrait être, vu que 2048 est un nombre fini et petit, vérifier chacune des cellules des tableaux logiques programmables pour s’assurer que la bonne valeur a été inscrite. C’est-à-dire inclure une phase de test supplémentaire entre la compilation ainsi que le chargement des données vers le matériel de gravure et la réalisation de la puce en elle-même. Le coût de production aurait été supérieur pour Intel certes, mais bien moindre que le scandale qui a suivi.
 
